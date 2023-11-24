@@ -1,0 +1,257 @@
+<!--Fill the code -->
+
+<mat-sidenav-container class="whole">
+    <mat-sidenav opened class="navlist" mode="side">
+        <mat-nav-list class="list">
+            <li class="list-items"><a routerLink="/associate/add" [queryParams]="{ paramFlag: 1 }" *ngIf="showAddAssociate">Add Associate</a>
+            </li>
+            <li class="list-items"><a routerLink="/associate/update" [queryParams]="{ paramFlag: 2 }" *ngIf="showUpdateAssociate">Update
+                    Associate</a></li>
+            <li class="list-items"><a routerLink="/associate/viewById" [queryParams]="{ paramFlag: 3 }" *ngIf="showAssociateById">View Associate</a>
+            </li>
+            <li class="list-items"><a routerLink="/associate/viewAll" [queryParams]="{ paramFlag: 4 }" *ngIf="showViewAll">View All
+                    Associates</a></li>
+        </mat-nav-list>
+    </mat-sidenav>
+
+    <mat-sidenav-content class="side">
+        <div style="height: 83vh;">
+            <h4 class="heading">Associate Management</h4>
+            <div class="form-container">
+
+                <ng-container *ngIf="paramFlag==1"  class="forms">
+                    <div>
+                        <h3 class="form-heading" >Add Associate </h3>
+                    </div>
+                    <div>
+                        <form #myForm="ngForm">
+                            
+                            <div>
+                                <label for="associateName">Associate Name:</label>
+                                <input type="text" [(ngModel)]="associate.associateName" name="associateName"id="associateName" required>
+                                <div *ngIf="myForm.controls['associateName'].invalid && (myForm.controls['associateName'].touched || myForm.submitted)" class="error-message">
+                                    Associate Name is required.
+                                </div>
+                            </div>
+                            <div>
+                                <label for="associateAddress">Associate Address:</label>
+                                <input type="text" [(ngModel)]="associate.associateAddress" name="associateAddress" id="associateAddress" required>
+                                <div *ngIf="myForm.controls['associateAddress'].invalid && (myForm.controls['associateAddress'].touched || myForm.submitted)" class="error-message">
+                                    Associate Address is required.
+                                </div>
+                            </div>
+                            <div>
+                                <label for="associateEmailId">Email Id:</label>
+                                <input type="email" [(ngModel)]="associate.associateEmailId" name="associateEmailId" id="associateEmailId" required>
+                                <div *ngIf="myForm.controls['associateEmailId'].invalid && (myForm.controls['associateEmailId'].touched || myForm.submitted)" class="error-message">
+                                    Associate Email-Id is required.
+                                </div>
+                            </div>
+                            <div style="display: flex; justify-content: center; margin-top: 10px;">
+                            <button (click)="addAssociate()" [disabled]="myForm.invalid"  class="my-button">Add Associate</button>
+                        </div>
+                        <div *ngIf="showAssociateDetails" class="db-details">
+                            <h3>Associate Details</h3>
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Associate ID</th>
+                                        <th>Associate Name</th>
+                                        <th>Associate Address</th>
+                                        <th>Associate Email-Id</th>
+                        
+                                        <!-- Add more table headers for additional details -->
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let associate of associatesById">
+                                        <td>{{ associate.associateId }}</td>
+                                        <td>{{ associate.associateName }}</td>
+                                        <td>{{associate.associateAddress  }}</td>
+                                        <td>{{associate.associateEmailId}}</td>
+                        
+                                        <!-- Add more table cells for additional details -->
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        </form>
+                        <div id="result" *ngIf="message">Associate added successfully</div>
+
+                    </div>
+                </ng-container>
+
+                <ng-container *ngIf="paramFlag == 2" class="forms">
+                    <h3 class="form-heading">Update Associate Details</h3>
+                    <form #myForm="ngForm" *ngIf="!errorFlag">
+                        <div>
+                            <label for="associateId">Associate ID:</label>
+                            <select [(ngModel)]="associate.associateId" name="associateId" id="associateId" required>
+                                <option value="">Select a Associate ID</option>
+                                <option *ngFor="let associate of associatesById" [value]="associate.associateId">{{ associate.associateId }}</option>
+                            </select>
+                            <div class="invalid"
+                                *ngIf="myForm.controls['associateId'].invalid && (myForm.controls['associateId'].touched || myForm.submitted)" class="error-message">
+                                Associate Id is required.
+                            </div>
+                        </div>
+                        <div>
+                            <label for="associateAddress">Associate Address:</label>
+                            <input type="text" [(ngModel)]="associate.associateAddress" name="associateAddress" 
+                                id="associateAddress" required>
+                            <div class="invalid"
+                                *ngIf="myForm.controls['associateAddress'].invalid && (myForm.controls['associateAddress'].touched || myForm.submitted)" class="error-message">
+                                Address is required.
+                            </div>
+                            </div>
+                            <div style="display: flex; justify-content: center; margin-top: 10px;">
+                            <button (click)="updateAssociate()" [disabled]="myForm.invalid" class="my-button">Update Associate</button>
+                        </div> 
+                        <div *ngIf="showAssociateDetails" class="db-details">
+                            <h3>Associate Details</h3>
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Associate ID</th>
+                                        <th>Associate Name</th>
+                                        <th>Associate Email-Id</th>
+                                        <th>Associate Address</th>
+                        
+                                        <!-- Add more table headers for additional details -->
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let associate of associatesById">
+                                        <td>{{ associate.associateId }}</td>
+                                        <td>{{ associate.associateName }}</td>
+                                        <td>{{ associate.associateEmailId }}</td>
+                                        <td>{{ associate.associateAddress }}</td>
+                        
+                                        <!-- Add more table cells for additional details -->
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        </form>
+                        <div class="invalid" *ngIf="errorFlag">
+                            <form #myForm="ngForm" >
+                                <div>
+                                    <label for="associateId">Associate ID:</label>
+                                    <select [(ngModel)]="associate.associateId" name="associateId" id="associateId" required>
+                                        <option value="">Select a Associate ID</option>
+                                        <option *ngFor="let associate of associatesById" [value]="associate.associateId">{{ associate.associateId }}
+                                        </option>
+                                    </select>
+                                    <div class="invalid"
+                                        *ngIf="myForm.controls['associateId'].invalid && (myForm.controls['associateId'].touched || myForm.submitted)" class="error-message">
+                                        Associate Id is required.
+                                    </div>
+                                </div>
+                                <div>
+                                    <label for="associateAddress">Associate Address:</label>
+                                    <input type="text" [(ngModel)]="associate.associateAddress" name="associateAddress" id="associateAddress"
+                                        required>
+                                    <div class="invalid"
+                                        *ngIf="myForm.controls['associateAddress'].invalid && (myForm.controls['associateAddress'].touched || myForm.submitted)" class="error-message">
+                                        Address is required.
+                                    </div>
+                                </div>
+                                <div  style="color: red; font-size: 12px; display: flex; justify-content: center; margin-top: 10px;">
+                                <button (click)="updateAssociate()" [disabled]="myForm.invalid"  class="my-button">Update Associate</button>
+                                    </div>
+                            </form>
+
+                           <div style="color: red; font-size: 12px; display: flex; justify-content: center; margin-top: 10px;">Invalid Associate ID.</div> 
+                        </div>
+
+                </ng-container>
+
+                <ng-container *ngIf="paramFlag == 3" class="forms">
+                    <h3 class="form-heading">View Associate Details by Id</h3>
+                    <form #myForm="ngForm">
+                        <div>
+                            <label for="associateId">Associate ID:</label>
+                            <select [(ngModel)]="associate.associateId" name="associateId" id="associateId" required>
+                                <option value="">Select a Associate ID</option>
+                                <option *ngFor="let associate of associatesById" [value]="associate.associateId">{{ associate.associateId }}
+                                </option>
+                            </select>
+                            <div class="invalid"
+                                *ngIf="myForm.controls['associateId'].invalid && (myForm.controls['associateId'].touched || myForm.submitted)" class="error-message">
+                                Associate Id is required.
+                            </div>
+                            <div  style="display: flex; justify-content: center; margin-top: 10px;">
+                            <button (click)="viewByAssociateId()" [disabled]="myForm.invalid"  class="my-button" class="search-btn">Search Associate</button>
+                        </div>
+                        </div>
+                    </form>
+                    <div *ngIf="showAssociateDetails && !errorFlag" class="db-details">
+                        <h3>Associate Details</h3>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Associate ID</th>
+                                    <th>Associate Name</th>
+                                    <th>Associate Email-Id</th>
+                                    <th>Associate Address</th>
+                                    
+                                    <!-- Add more table headers for additional details -->
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let associate of associatesById">
+                                    <td>{{ associate.associateId }}</td>
+                                    <td>{{ associate.associateName }}</td>
+                                    <td>{{ associate.associateAddress }}</td>
+                                    <td>{{ associate.associateEmailId }}</td>
+                                    
+                                    <!-- Add more table cells for additional details -->
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="invalid"  *ngIf="errorFlag" style="color: red; font-size: 12px;">
+                        Invalid Associate ID.
+                    </div>
+
+                </ng-container>
+
+                <ng-container *ngIf="paramFlag == 4" class="forms">
+                    <h3 class="form-heading">View All</h3>
+                    <form #myForm="ngForm">
+                        <div>
+                            <button (click)="viewAll()" [disabled]="myForm.invalid" class="search-btn">View</button>
+                        </div>
+                
+                    </form>
+                    <div *ngIf="showAssociateDetails" class="db-details">
+                        <h3>Associate Details</h3>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Associate ID</th>
+                                    <th>Associate Name</th>
+                                    <th>Associate Address</th>
+                                    <th>Associate Email</th>
+                                    <!-- Add more table headers for additional details -->
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let associate of associatesById">
+                                    <td>{{ associate.associateId }}</td>
+                                    <td>{{ associate.associateName }}</td>
+                                    <td>{{ associate.associateAddress }}</td>
+                                    <td>{{ associate.associateEmailId }}</td>
+                                    <!-- Add more table cells for additional details -->
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="invalid" *ngIf="errorFlag">
+                        No Course found in the database.
+                    </div>
+                </ng-container>
+            </div>
+        </div>
+    </mat-sidenav-content>
+</mat-sidenav-container>

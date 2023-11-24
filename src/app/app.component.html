@@ -1,0 +1,20 @@
+<header>
+    <nav>
+        <div class="navbar-brand">TekGain</div>
+        <div class="logout-btn" *ngIf="loggedIn">
+            <button (click)="onLogout()" class="btn btn-light">Log out</button>
+        </div>
+    </nav>
+</header>
+
+<mat-toolbar class="toolbar" *ngIf="loggedIn">
+    <div class="d-grid gap-2 d-md-flex justify-content-end  btn-text-light ">
+        <a routerLink="/course" mat-raised-button class="btn btn-light" type="button" float="right">Course</a>
+        <a routerLink="/associate" mat-raised-button class="btn btn-light" type="button" float="right">Associate</a>
+        <a routerLink="/admission" mat-raised-button class="btn btn-light" type="button" float="right">Admission</a>
+       
+    </div>
+</mat-toolbar>
+
+
+<router-outlet></router-outlet>

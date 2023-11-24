@@ -1,0 +1,427 @@
+<mat-sidenav-container class="whole">
+    <mat-sidenav opened class="navlist" mode="side">
+        <mat-nav-list class="list">
+            <li class="list-items"><a routerLink="/admission/registration" [queryParams]="{ paramFlag: 1 }"
+                    *ngIf="showRegistration">Associate
+                    Registration</a></li>
+            <li class="list-items"><a routerLink="/admission/totalFees" [queryParams]="{ paramFlag: 2 }"
+                    *ngIf="showCalculateFees">Calculate Total
+                    Fee</a></li>
+            <li class="list-items"><a routerLink="/admission/addFeedback" [queryParams]="{ paramFlag: 3 }"
+                    *ngIf="showAddFeedback">Update
+                    Feedback</a></li>
+            <li class="list-items"><a routerLink="/admission/highestFee" [queryParams]="{ paramFlag: 4 }"
+                    *ngIf="showHighestFee">Highest
+                    Fee</a></li>
+            <li class="list-items"><a routerLink="/admission/viewFeedback" [queryParams]="{ paramFlag: 5 }"
+                    *ngIf="showViewFeedbackById">View
+                    Feedback</a></li>
+            <li class="list-items"><a routerLink="/admission/deactivateAdmission" [queryParams]="{ paramFlag: 6 }"
+                    *ngIf="showDeactivate">Deactivate
+                    Admission </a></li>
+            <li class="list-items"><a routerLink="/admission/viewAll" [queryParams]="{ paramFlag: 7 }"
+                    *ngIf="showViewAll">View All
+                </a></li>
+            <li class="list-items"><a routerLink="/admission/makePayment" [queryParams]="{ paramFlag: 8 }"
+                    *ngIf="showRegistration">Make
+                    Payment</a></li>
+
+        </mat-nav-list>
+    </mat-sidenav>
+
+    <mat-sidenav-content class="side">
+        <div style="height: 83vh;">
+            <h4 class="heading">Admission Management</h4>
+
+            <div class="form-container">
+
+                <ng-container *ngIf="paramFlag==1" class="forms">
+                    <div>
+                        <h3 class="form-heading">Associate Registration</h3>
+                    </div>
+                    <div>
+                        <form #myForm="ngForm">
+                            <div>
+                                <label for="courseId">Course ID:</label>
+                                <input type="text" [(ngModel)]="admission.courseId" name="courseId" id="courseId"
+                                    required>
+                                <div class="invalid"
+                                    *ngIf="myForm.controls['courseId'].invalid && (myForm.controls['courseId'].touched || myForm.submitted)"
+                                    class="error-message">
+                                    Course Id is required.
+                                </div>
+                            </div>
+                            <div>
+                                <label for="associateId">Associate Id:</label>
+                                <input type="text" [(ngModel)]="admission.associateId" name="associateId"
+                                    id="associateId" required>
+                                <div class="invalid"
+                                    *ngIf="myForm.controls['associateId'].invalid && (myForm.controls['associateId'].touched || myForm.submitted)"
+                                    class="error-message">
+                                    Associate Id is required.
+                                </div>
+                            </div>
+                            <div>
+                                <label for="fees">Fees:</label>
+                                <input type="text" [(ngModel)]="admission.fees" name="fees" id="fees" required>
+                                <div class="invalid"
+                                    *ngIf="myForm.controls['fees'].invalid && (myForm.controls['fees'].touched || myForm.submitted)"
+                                    class="error-message">
+                                    Fees is required.
+                                </div>
+                            </div>
+                            <div>
+                                <label for="feedback">Feedback:</label>
+                                <input placeholder="out of 5" type="number" [(ngModel)]="admission.feedback" name="feedback"  min="0" max="5"id="feedback"
+                                    required>
+                                <div class="invalid"
+                                    *ngIf="myForm.controls['feedback'].invalid && (myForm.controls['feedback'].touched || myForm.submitted)"
+                                    class="error-message">
+                                    Feedback is required.
+                                </div>
+                            </div>
+                            <div style="display: flex; justify-content: center; margin-top: 10px;">
+                                <button (click)="registration()" [disabled]="myForm.invalid"
+                                    class="my-button">Register</button>
+                            </div>
+                            <div *ngIf="showAdmissionDetails" class="db-details">
+                                <h3>Admission Details</h3>
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>Registration ID</th>
+                                            <th>Course ID</th>
+                                            <th>Associate ID</th>
+                                            <th>Fees</th>
+                                            <th>Feedback</th>
+                                            <!-- Add more table headers for additional details -->
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr *ngFor="let admission of admissionById">
+                                            <td>{{ admission.registrationId }}</td>
+                                            <td>{{ admission.courseId }}</td>
+                                            <td>{{ admission.associateId }}</td>
+                                            <td>{{ admission.fees }}</td>
+                                            <td>{{ admission.feedback }}</td>
+                                            <!-- Add more table cells for additional details -->
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </form>
+                        <div id="result" *ngIf="message">Registration done Successfully</div>
+
+                    </div>
+                </ng-container>
+
+                <ng-container *ngIf="paramFlag == 2" class="forms">
+                    <h3 class="form-heading">Total Fee Calculation</h3>
+                    <form #myForm="ngForm">
+                        <div>
+                            <label for="associateId">Associate ID:</label>
+                            <select [(ngModel)]="admission.associateId" name="associateId" id="associateId" required>
+                                <option value="">Select a associate ID</option>
+                                <option *ngFor="let admission of admissionById" [value]="admission.associateId">{{
+                                    admission.associateId }}</option>
+                            </select>
+                            <div class="invalid"
+                                *ngIf="myForm.controls['associateId'].invalid && (myForm.controls['associateId'].touched || myForm.submitted)"
+                                class="error-message">
+                                Associate is required.
+                            </div>
+                        </div>
+                        <div style="display: flex; justify-content: center; margin-top: 10px;">
+                            <button (click)="totalFees()" [disabled]="myForm.invalid"
+                                class="my-button">Calculate</button>
+                        </div>
+                    </form>
+
+                    <div *ngIf="showAdmissionDetails && !errorFlag" class="details">
+                        <h1>Fees: {{ fees }}</h1>
+                    </div>
+                    <div class="invalid" *ngIf="errorFlag" style="color: red; font-size: 12px;">
+                        Invalid Associate ID.
+                    </div>
+                </ng-container>
+
+                <ng-container *ngIf="paramFlag == 3" class="forms">
+                    <h3 class="form-heading">Feedback Details</h3>
+                    <form #myForm="ngForm" *ngIf="!errorFlag">
+                        <div>
+                            <label for="registrationId">Registration ID:</label>
+                            <select [(ngModel)]="admission.registrationId" name="registrationId" id="registrationId"
+                                required>
+                                <option value="">Select a registration ID</option>
+                                <option *ngFor="let admission of admissionById" [value]="admission.registrationId">{{
+                                    admission.registrationId }}</option>
+                            </select>
+                            <div class="invalid"
+                                *ngIf="myForm.controls['registrationId'].invalid && (myForm.controls['registrationId'].touched || myForm.submitted)"
+                                class="error-message">
+                                Registration Id is required.
+                            </div>
+                        </div>
+                        <div>
+                            <label for="feedack">Feedback:</label>
+                            <input placeholder="out of 5" type="number" [(ngModel)]="admission.feedback" name="feedback" min="0" max="5" id="feedback" required>
+                            <div class="invalid"
+                                *ngIf="myForm.controls['feedback'].invalid && (myForm.controls['feedback'].touched || myForm.submitted)"
+                                class="error-message">
+                                Feedback is required.
+                            </div>
+                        </div>
+                        <div style="display: flex; justify-content: center; margin-top: 10px;">
+                            <button (click)="updateFeedback()" [disabled]="myForm.invalid" class="search-btn">Add
+                                Feedback</button>
+                        </div>
+                        <div *ngIf="showAdmissionDetails" class="db-details">
+                            <h3>Admission Details</h3>
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Registration ID</th>
+                                        <th>Course ID</th>
+                                        <th>Associate ID</th>
+                                        <th>Fees</th>
+                                        <th>Feedback</th>
+                                        <!-- Add more table headers for additional details -->
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let admission of admissionById">
+                                        <td>{{ admission.registrationId }}</td>
+                                        <td>{{ admission.courseId }}</td>
+                                        <td>{{ admission.associateId }}</td>
+                                        <td>{{ admission.fees }}</td>
+                                        <td>{{ admission.feedback }}</td>
+                                        <!-- Add more table cells for additional details -->
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                    </form>
+                    <div class="invalid" *ngIf="errorFlag">
+                        <form #myForm="ngForm">
+                            <div>
+                                <label for="registrationId">Registration ID:</label>
+                                <select [(ngModel)]="admission.registrationId" name="registrationId" id="registrationId"
+                                    required>
+                                    <option value="">Select a registration ID</option>
+                                    <option *ngFor="let admission of admissionById" [value]="admission.registrationId">
+                                        {{ admission.registrationId }}</option>
+                                </select>
+                                <div class="invalid"
+                                    *ngIf="myForm.controls['registrationId'].invalid && (myForm.controls['registrationId'].touched || myForm.submitted)"
+                                    class="error-message">
+                                    Registration Id is required.
+                                </div>
+                            </div>
+                            <div>
+                                <label for="feedack">Feedback:</label>
+                                <input placeholder="out of 5" type="number" [(ngModel)]="admission.feedback" name="feedback" min="0" max="5" id="feedback"
+                                    required>
+                                <div class="invalid"
+                                    *ngIf="myForm.controls['feedback'].invalid && (myForm.controls['feedback'].touched || myForm.submitted)"
+                                    class="error-message">
+                                    Feedback is required.
+                                </div>
+                            </div>
+
+                            <button (click)="updateFeedback()" [disabled]="myForm.invalid" class="search-btn">Add
+                                Feedback
+
+                            </button>
+                        </form>
+                        <div
+                            style="color: red; font-size: 12px; display: flex; justify-content: center; margin-top: 10px;">
+                            Invalid Registration ID
+                        </div>
+                    </div>
+
+                </ng-container>
+
+                <ng-container *ngIf="paramFlag == 4" class="forms">
+                    <h3 class="form-heading">Highest Fee</h3>
+                    <form #myForm="ngForm">
+                        <div>
+                            <label for="associateId">Associate ID:</label>
+                            <select [(ngModel)]="admission.associateId" name="associateId" id="associateId" required>
+                                <option value="">Select a associate ID</option>
+                                <option *ngFor="let admission of admissionById" [value]="admission.associateId">{{
+                                    admission.associateId }}</option>
+                            </select>
+                            <div class="invalid"
+                                *ngIf="myForm.controls['associateId'].invalid && (myForm.controls['associateId'].touched || myForm.submitted)"
+                                class="error-message">
+                                Associate Id is required.
+                            </div>
+                            <div style="display: flex; justify-content: center; margin-top: 10px;">
+                                <button (click)="highestFee()" [disabled]="myForm.invalid" class="search-btn">Get
+                                    Id</button>
+                            </div>
+                        </div>
+                    </form>
+                    <div *ngIf="showAdmissionDetails && !errorFlag" class="details">
+                        <h1>Id of course with highest Fee: {{ highestFee }}</h1>
+                    </div>
+                    <div class="invalid" *ngIf="!showAdmissionDetails && errorFlag"
+                        style="color: red; font-size: 12px;">
+                        Invalid Associate ID.
+                    </div>
+
+
+                </ng-container>
+
+                <ng-container *ngIf="paramFlag == 5" class="forms">
+                    <h3 class="form-heading">View Feedback</h3>
+                    <form #myForm="ngForm">
+                        <div>
+                            <label for="courseId">Course ID:</label>
+                            <select [(ngModel)]="admission.courseId" name="courseId" id="courseId" required>
+                                <option value="">Select a course ID</option>
+                                <option *ngFor="let admission of admissionById" [value]="admission.courseId">{{
+                                    admission.courseId }}</option>
+                            </select>
+                            <div class="invalid"
+                                *ngIf="myForm.controls['courseId'].invalid && (myForm.controls['courseId'].touched || myForm.submitted)"
+                                class="error-message">
+                                Course Id is required.
+                            </div>
+                        </div>
+                        <div style="display: flex; justify-content: center; margin-top: 10px;">
+                            <button (click)="viewFeedbackByCourseId()" [disabled]="myForm.invalid"
+                                class="my-button">View Feedback</button>
+                        </div>
+                       
+                    </form>
+                    <div *ngIf="showAdmissionDetails && !errorFlag" class="details">
+                        <h1>Feedback Rating: {{ feedback}}</h1>
+                    </div>
+                    <div class="invalid" *ngIf="errorFlag" style="color: red; font-size: 12px;">
+                        Invalid Course ID.
+                    </div>
+
+                    <!-- <div *ngIf="message">Feedback Ratings are</div>-->
+                </ng-container>
+
+                <ng-container *ngIf="paramFlag == 6" class="forms">
+                    <h3 class="form-heading">Deactivate</h3>
+                    <form #myForm="ngForm">
+                        <div>
+                            <label for="courseId">Course ID:</label>
+                            <select [(ngModel)]="admission.courseId" name="courseId" id="courseId" required>
+                                <option value="">Select a course ID</option>
+                                <option *ngFor="let admission of admissionById" [value]="admission.courseId">{{
+                                    admission.courseId }}</option>
+                            </select>
+                            <div class="invalid"
+                                *ngIf="myForm.controls['courseId'].invalid && (myForm.controls['courseId'].touched || myForm.submitted)"
+                                class="error-message">
+                                Course Id is required.
+                            </div>
+                        </div>
+                        <div style="display: flex; justify-content: center; margin-top: 10px;">
+                            <button (click)="confirmDisableAdmission()" [disabled]="myForm.invalid"
+                                class="my-button">Disable
+                                Admission</button>
+                        </div>
+                        <div *ngIf="showAdmissionDetails" class="db-details">
+                            <h3>Admission Details</h3>
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Registration ID</th>
+                                        <th>Course ID</th>
+                                        <th>Associate ID</th>
+                                        <th>Fees</th>
+                                        <th>Feedback</th>
+                                        <!-- Add more table headers for additional details -->
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let admission of admissionById">
+                                        <td>{{ admission.registrationId }}</td>
+                                        <td>{{ admission.courseId }}</td>
+                                        <td>{{ admission.associateId }}</td>
+                                        <td>{{ admission.fees }}</td>
+                                        <td>{{ admission.feedback }}</td>
+                                        <!-- Add more table cells for additional details -->
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </form>
+                    <div class="invalid" *ngIf="errorFlag" style="color: red; font-size: 12px;">
+                        Invalid Course ID.
+                    </div>
+
+                    <div *ngIf="message">Course Disabled Successfully</div>
+
+                </ng-container>
+
+                <ng-container *ngIf="paramFlag == 7" class="forms">
+                    <h3 class="form-heading">View All Admission</h3>
+                    <form #myForm="ngForm">
+                        <div>
+                            <div style="display: flex; justify-content: center; margin-top: 10px;">
+                                <button (click)="viewAll()" [disabled]="myForm.invalid" class="search-btn">View</button>
+                            </div>
+                        </div>
+                    </form>
+                    <div *ngIf="showAdmissionDetails" class="db-details">
+                        <h3>Admission Details</h3>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Registration ID</th>
+                                    <th>Course ID</th>
+                                    <th>Associate ID</th>
+                                    <th>Fees</th>
+                                    <th>Feedback</th>
+                                    <!-- Add more table headers for additional details -->
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let admission of admissionById">
+                                    <td>{{ admission.registrationId }}</td>
+                                    <td>{{ admission.courseId }}</td>
+                                    <td>{{ admission.associateId }}</td>
+                                    <td>{{ admission.fees }}</td>
+                                    <td>{{ admission.feedback }}</td>
+                                    <!-- Add more table cells for additional details -->
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </ng-container>
+
+                <ng-container *ngIf="paramFlag == 8" class="forms">
+                    <h3>Make Payment</h3>
+                    <form #myForm="ngForm">
+                        <div>
+                            <label for="registrationId">Registration ID:</label>
+                            <select [(ngModel)]="admission.registrationId" name="registrationId" id="registrationId"
+                                required>
+                                <option value="">Select a registration ID</option>
+                                <option *ngFor="let admission of admissionById" [value]="admission.registrationId">{{
+                                    admission.registrationId }}</option>
+                            </select>
+                            <div class="invalid"
+                                *ngIf="myForm.controls['registrationId'].invalid && (myForm.controls['registrationId'].touched || myForm.submitted)"
+                                class="error-message">
+                                Registration Id is required.
+                            </div>
+                        </div>
+                        <div style="display: flex; justify-content: center; margin-top: 10px;">
+                            <button (click)="makePayment()" [disabled]="myForm.invalid" class="my-button">Make
+                                Payment</button>
+                        </div>
+                    </form>
+                </ng-container>
+            </div>
+        </div>
+    </mat-sidenav-content>
+
+</mat-sidenav-container>

@@ -1,0 +1,27 @@
+nav{
+    padding: 10px;
+    background-color: #09314b;
+}
+.navbar-brand{
+    color: #ccc;
+}
+
+.navbar-brand{
+    padding: 2px;
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.toolbar{
+    background-color: #006d5b;
+    display: flex;
+    justify-content: flex-end;
+   
+} 
+
+.navlist{
+    background-color:#006d5b;
+    width: 15%;
+    align-items: center;
+  justify-content: center;
+}
